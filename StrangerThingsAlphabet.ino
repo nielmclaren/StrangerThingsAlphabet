@@ -9,36 +9,43 @@ int drawingMemory[ledsPerStrip*6];
 const int config = WS2811_RGB | WS2811_800kHz;
 OctoWS2811 leds(ledsPerStrip, displayMemory, drawingMemory, config);
 
+/*
+// Dimmer colours
 #define BLACK 0x000000
-#define BROWN 0x6A332F
+#define RED    0x660000
+#define ORANGE 0x663300
+#define YELLOW 0x666600
+#define GREEN  0x006600
+#define BLUE   0x111166
+#define VIOLET 0x773366
+*/
+
+// Full colours
+#define BLACK 0x000000
 #define RED    0xFF0000
 #define ORANGE 0xFF6600
 #define YELLOW 0xFFFF00
 #define GREEN  0x00FF00
 #define BLUE   0x2222FF
 #define VIOLET 0xCC66FF
-#define GREY 0x888888
-#define WHITE  0xFFFFFF
-
-#define PINK   0xFF1088
 
 int ledColors[] = {
-  RED, ORANGE, YELLOW, GREEN, BLUE
+  RED, ORANGE, YELLOW, GREEN, BLUE, VIOLET
 };
 int ledColorsLength;
 
 char messages[] =
-"abcdefghijklmnopqrstuvwxyz."
+//"abcdefghijklmnopqrstuvwxyz."
 "help me."
-"theyre coming for me."
+"theyre coming."
 "i love lamp."
 "im scared."
 "the cake is a lie."
 "help."
 "bieber is after me."
-"can i add you on linkedin."
 "were doomed."
 "theyre going to kill me."
+"can i add you on linkedin."
 "were all gonna die."
 ;
 
@@ -111,31 +118,41 @@ void handleChar(char c) {
 }
 
 void displayChar(char c) {
-  // TODO: Replace with actual library.
-  // TODO: Fade on and fade off.
   int led = charToIndex(c);
+  int color = getLedColor(led);
   for (int i = 0; i < leds.numPixels(); i++) {
-    if (i == led) {
-      leds.setPixel(i, getLedColor(led));
-    } else {
+    if (i != led) {
       leds.setPixel(i, BLACK);
     }
   }
   leds.show();
+
+  fade(led, BLACK, color, 2);
   delayForChar(c);
+  fade(led, color, BLACK, 2);
 }
 
 int getLedColor(int index) {
   return ledColors[index % ledColorsLength];
 }
 
+void fade(int led, int fromColor, int toColor, int delayMs) {
+  float v = 0;
+  for (int i = 0; i < 64; i++) {
+    float v = (float)i / 64;
+    leds.setPixel(led, lerpColor(fromColor, toColor, v));
+    leds.show();
+    delay(delayMs);
+  }
+}
+
 void delayForChar(char c) {
   switch (c) {
     case '.':
-      delay(random(5000, 10000));
+      delay(random(5000, 15000));
       break;
     case ' ':
-      delay(random(1500, 2500));
+      delay(random(300, 600));
       break;
     default:
       delay(random(750, 1250));
@@ -156,3 +173,21 @@ void colorWipe(int color) {
     leds.setPixel(i, color);
   }
 }
+
+int redMask = 0xFF0000, greenMask = 0xFF00, blueMask = 0xFF;
+int lerpColor(int a, int b, float v) {
+  int ar = (a & redMask) >> 16;
+  int ag = (a & greenMask) >> 8;
+  int ab = (a & blueMask);
+  int br = (b & redMask) >> 16;
+  int bg = (b & greenMask) >> 8;
+  int bb = (b & blueMask);
+
+  ar += (br - ar) * v;
+  ag += (bg - ag) * v;
+  ab += (bb - ab) * v;
+
+  int rgb = (ar << 16) + (ag << 8) + ab;
+  return rgb;
+}
+
