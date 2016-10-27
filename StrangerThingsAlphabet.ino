@@ -37,44 +37,45 @@ int ledColorsLength;
 char messages[] =
 //"abcdefghijklmnopqrstuvwxyz."
 "help me."
-"theyre coming."
+"they are coming."
+"i'm going to die here."
 "i love lamp."
 "im scared."
 "help."
-"bieber is after me."
-"were doomed."
-"theyre going to kill me."
+"save me from bieber."
+"we are doomed."
+"they are going to kill me."
 "can i add you on linkedin."
-"were all gonna die."
+"we are all gonna die."
 ;
 
 int charIndexMap[] = {
-  11, // a
-  13, // b
-  15, // c
-  17, // d
-  20, // e
-  22, // f
-  24, // g
-  27, // h
-  51, // i
-  50, // j
-  49, // k
-  48, // l
-  46, // m
-  44, // n
-  42, // o
-  41, // p
-  37, // q
-  59, // r
-  61, // s
-  63, // t
-  65, // u
-  67, // v
-  68, // w
-  71, // x
-  72, // y
-  77, // z
+  79, // a
+  82, // b
+  85, // c
+  87, // d
+  89, // e
+  92, // f
+  95, // g
+  99, // h
+  70, // i
+  68, // j
+  65, // k
+  62, // l
+  60, // m
+  56, // n
+  54, // o
+  50, // p
+  49, // q
+  18, // r
+  20, // s
+  24, // t
+  26, // u
+  30, // v
+  33, // w
+  35, // x
+  37, // y
+  39, // z
 };
 
 int messagesLength;
@@ -145,10 +146,24 @@ void fade(int led, int fromColor, int toColor, int delayMs) {
   }
 }
 
+void fadeWipe(int fromColor, int toColor, int steps, int delayMs) {
+  float v = 0;
+  for (int i = 0; i < steps; i++) {
+    float v = (float)i / steps;
+    int color = lerpColor(fromColor, toColor, v);
+    for (int led = 0; led < leds.numPixels(); led++) {
+      leds.setPixel(led, color);
+    }
+    leds.show();
+    delay(delayMs);
+  }
+}
+
 void delayForChar(char c) {
   switch (c) {
     case '.':
-      delay(random(5000, 15000));
+      delay(random(6000, 8000));
+      flashLedPattern();
       break;
     case ' ':
       delay(random(300, 600));
@@ -157,6 +172,56 @@ void delayForChar(char c) {
       delay(random(750, 1250));
       break;
   }
+}
+
+void flashLedPattern() {
+  int numFlashes = random(3, 10);
+  for (int i = 0; i < numFlashes; i++) {
+    randomFlash();
+  }
+
+  colorWipe(BLACK);
+  leds.show();
+  delay(1000);
+}
+
+void randomFlash() {
+  int color = ledColors[random(ledColorsLength)];
+  if (random(100) < 50) {
+    flash(color);
+  } else {
+    flashFade(color);
+  }
+  delay(random(0, 150));
+}
+
+void flash(int color) {
+  colorWipe(color);
+  leds.show();
+  delay(2);
+  colorWipe(BLACK);
+  leds.show();
+  delay(2);
+
+  colorWipe(BLACK);
+  leds.show();
+}
+
+void flashFade(int color) {
+  int steps;
+
+  steps = random(8, 64);
+  fadeWipe(BLACK, color, steps, 1);
+  leds.show();
+  delay(2);
+
+  steps = random(8, 64);
+  fadeWipe(color, BLACK, steps, 1);
+  leds.show();
+  delay(2);
+
+  colorWipe(BLACK);
+  leds.show();
 }
 
 int charToIndex(char c) {
