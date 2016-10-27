@@ -40,7 +40,6 @@ char messages[] =
 "theyre coming."
 "i love lamp."
 "im scared."
-"the cake is a lie."
 "help."
 "bieber is after me."
 "were doomed."
