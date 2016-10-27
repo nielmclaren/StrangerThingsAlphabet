@@ -1,7 +1,7 @@
 
 #include <OctoWS2811.h>
 
-const int ledsPerStrip = 50;
+const int ledsPerStrip = 100;
 
 DMAMEM int displayMemory[ledsPerStrip*6];
 int drawingMemory[ledsPerStrip*6];
@@ -15,7 +15,7 @@ OctoWS2811 leds(ledsPerStrip, displayMemory, drawingMemory, config);
 #define ORANGE 0xFF6600
 #define YELLOW 0xFFFF00
 #define GREEN  0x00FF00
-#define BLUE   0x0000FF
+#define BLUE   0x2222FF
 #define VIOLET 0xCC66FF
 #define GREY 0x888888
 #define WHITE  0xFFFFFF
@@ -23,49 +23,52 @@ OctoWS2811 leds(ledsPerStrip, displayMemory, drawingMemory, config);
 #define PINK   0xFF1088
 
 int ledColors[] = {
-  RED, ORANGE, YELLOW, GREEN, BLUE, VIOLET
+  RED, ORANGE, YELLOW, GREEN, BLUE
 };
+int ledColorsLength;
 
-char messages[] = "abcdefghijklmnopqrstuvwxyz."
-"help."
+char messages[] =
+"abcdefghijklmnopqrstuvwxyz."
 "help me."
-"im scared."
 "theyre coming for me."
-"theyre going to kill me."
+"i love lamp."
+"im scared."
+"the cake is a lie."
+"help."
 "bieber is after me."
 "can i add you on linkedin."
-"the cake is a lie."
 "were doomed."
+"theyre going to kill me."
 "were all gonna die."
-"i love lamp.";
+;
 
 int charIndexMap[] = {
-  0, // a
-  1, // b
-  3, // c
-  5, // d
-  7, // e
-  9, // f
-  11, // g
-  13, // h
-  15, // i
-  17, // j
-  19, // k
-  21, // l
-  23, // m
-  25, // n
-  27, // o
-  29, // p
-  31, // q
-  33, // r
-  35, // s
-  37, // t
-  39, // u
-  41, // v
-  43, // w
-  45, // x
-  47, // y
-  49, // z
+  11, // a
+  13, // b
+  15, // c
+  17, // d
+  20, // e
+  22, // f
+  24, // g
+  27, // h
+  51, // i
+  50, // j
+  49, // k
+  48, // l
+  46, // m
+  44, // n
+  42, // o
+  41, // p
+  37, // q
+  59, // r
+  61, // s
+  63, // t
+  65, // u
+  67, // v
+  68, // w
+  71, // x
+  72, // y
+  77, // z
 };
 
 int messagesLength;
@@ -75,7 +78,9 @@ void setup() {
   leds.begin();
   leds.show();
 
-  messagesLength = sizeof(messages);
+  ledColorsLength = sizeof(ledColors) / sizeof(int);
+
+  messagesLength = sizeof(messages) / sizeof(char);
 
   Serial.begin(9600);
 }
@@ -84,12 +89,11 @@ void loop() {
   char c = getNextChar();
   handleChar(c);
   leds.show();
-  delay(2000);
 }
 
 char getNextChar() {
   char c = messages[messageCharIndex];
-  
+
   messageCharIndex++;
   if (messageCharIndex > messagesLength) {
     messageCharIndex = 0;
@@ -122,7 +126,7 @@ void displayChar(char c) {
 }
 
 int getLedColor(int index) {
-  return ledColors[index % sizeof(ledColors)];
+  return ledColors[index % ledColorsLength];
 }
 
 void delayForChar(char c) {
@@ -131,10 +135,10 @@ void delayForChar(char c) {
       delay(random(5000, 10000));
       break;
     case ' ':
-      delay(random(1500, 2000));
+      delay(random(1500, 2500));
       break;
     default:
-      delay(random(750, 1000));
+      delay(random(750, 1250));
       break;
   }
 }
