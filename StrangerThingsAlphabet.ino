@@ -36,13 +36,14 @@ int ledColorsLength;
 
 char messages[] =
 //"abcdefghijklmnopqrstuvwxyz."
+"behind you."
 "help me."
 "they are coming."
 "i'm going to die here."
 "i love lamp."
 "im scared."
 "help."
-"save me from bieber."
+"you're next."
 "we are doomed."
 "they are going to kill me."
 "can i add you on linkedin."
@@ -50,32 +51,32 @@ char messages[] =
 ;
 
 int charIndexMap[] = {
-  79, // a
-  82, // b
-  85, // c
-  87, // d
-  89, // e
-  92, // f
-  95, // g
-  99, // h
-  70, // i
-  68, // j
-  65, // k
-  62, // l
-  60, // m
-  56, // n
-  54, // o
-  50, // p
-  49, // q
-  18, // r
-  20, // s
-  24, // t
-  26, // u
-  30, // v
-  33, // w
-  35, // x
-  37, // y
-  39, // z
+  78, // a
+  76, // b
+  73, // c
+  72, // d
+  68, // e
+  55, // f
+  58, // g
+  60, // h
+  61, // i
+  63, // j
+  49, // k
+  48, // l
+  47, // m
+  45, // n
+  43, // o
+  27, // p
+  28, // q
+  30, // r
+  32, // s
+  34, // t
+  35, // u
+  20, // v
+  18, // w
+  15, // x
+  14, // y
+  10, // z
 };
 
 int messagesLength;
